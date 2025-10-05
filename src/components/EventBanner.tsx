@@ -1,4 +1,4 @@
-import anniversaryImage from 'figma:asset/cffb3e64fc55636ba3f7f4c1f57195e463206a35.png';
+import anniversaryImage from '../assets/anniversaryImage.png';
 
 /**
  * Componente do banner principal do evento
