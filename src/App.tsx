@@ -85,9 +85,15 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white">
-      {/* Container principal com padding responsivo */}
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+    <div> {/* Removida: min-h-screen bg-gray-950 text-white */}
+        {/* Container principal com padding responsivo */}
+        <div> {/* Removida: container mx-auto px-4 py-8 max-w-4xl */}
+            
+            {/* Adicione um texto simples para garantir que apareça: */}
+            <h1>SITE FUNCIONOU</h1>
+            
+            <EventBanner />
+            {/* ... o resto do seu código ... */}
         {/* Banner principal do evento */}
         <EventBanner />
 
