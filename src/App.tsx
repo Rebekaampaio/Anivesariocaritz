@@ -92,8 +92,10 @@ export default function App() {
             {/* Adicione um texto simples para garantir que apareça: */}
             <h1>SITE FUNCIONOU</h1>
             
-            <EventBanner />
-            {/* ... o resto do seu código ... */}
+ return (
+    <div className="min-h-screen bg-gray-950 text-white"> 
+      <div className="container mx-auto px-4 py-8 max-w-4xl">
+        
         {/* Banner principal do evento */}
         <EventBanner />
 
@@ -102,13 +104,13 @@ export default function App() {
           <SuccessMessage onClose={handleCloseSuccess} />
         )}
 
-        {/* Seção de pagamento (quando há um participante para pagar) */}
+        {/* Seção de pagamento (Comentado para ISOLAMENTO) 
         {currentPaymentAttendee && (
           <PaymentSection
             attendee={currentPaymentAttendee}
             onPaymentComplete={handlePaymentComplete}
           />
-        )}
+        )} */} 
 
         {/* Descrição completa do evento */}
         <EventDescription />
@@ -139,6 +141,9 @@ export default function App() {
           </div>
         </footer>
       </div>
+    </div>
+  );
+        </div>
     </div>
   );
 }
