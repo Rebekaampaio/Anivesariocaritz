@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aniversário Car Itz - Confirmação de Presença</title>
+    <style>
+        /* Reset e estilo global */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #111111 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Banner principal */
+        .banner {
+            position: relative;
+            height: 500px;
+            background: #111111;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .banner-image {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            background: #111111;
+        }
+
+        .banner::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 40%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.6), transparent);
+            z-index: 1;
+        }
+
+        .banner-content {
+            position: absolute;
+            bottom: 24px;
+            left: 24px;
+            z-index: 2;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 16px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(220, 38, 38, 0.3);
+        }
+
+        .banner-info {
+            font-size: 0.9rem;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            color: white;
+        }
+
+        .banner-info div {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .banner-info span:last-child {
+            font-weight: 500;
+        }
+
+        /* Cards */
+        .card {
+            background: #111111;
+            border: 1px solid #262626;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .card h2 {
+            color: #dc2626;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        /* Formulário */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ffffff;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            background: #1a1a1a;
+            border: 1px solid #262626;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 16px;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #dc2626;
+        }
+
+        .btn {
+            background: #dc2626;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background: #b91c1c;
+        }
+
+        .btn:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        /* Lista de confirmados */
+        .attendees-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .attendee-item {
+            background: #1a1a1a;
+            border: 1px solid #262626;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .attendee-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .attendee-icon {
+            font-size: 1.5rem;
+        }
+
+        .badge {
+            background: #dc2626;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Seção de pagamento */
+        .payment-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .qr-code {
+            text-align: center;
+        }
+
+        .qr-code img {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 250px;
+        }
+
+        .pix-info {
+            background: #1a1a1a;
+            border: 1px solid #dc2626;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+            text-align: center;
+            padding: 30px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+
+        .success-message h2 {
+            color: #22c55e;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        /* Links sociais */
+        .social-links {
+            border-top: 1px solid #262626;
+            padding-top: 30px;
+            margin-top: 30px;
+        }
+
+        .social-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #1a1a1a;
+            border: 1px solid #262626;
+            border-radius: 8px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            min-width: 200px;
+            justify-content: center;
+        }
+
+        .social-link:hover {
+            border-color: #4b5563;
+            background: #222;
+            transform: translateY(-2px);
+        }
+
+        .social-link.instagram:hover {
+            color: #ec4899;
+        }
+
+        .social-link.whatsapp:hover {
+            color: #22c55e;
+        }
+
+        .social-link-icon {
+            width: 20px;
+            height: 20px;
+        }
+
+        .social-links-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Responsivo */
+        @media (max-width: 768px) {
+            .banner h1 {
+                font-size: 2rem;
+            }
+
+            .banner-info {
+                font-size: 1rem;
+            }
+
+            .payment-section {
+                grid-template-columns: 1fr;
+            }
+
+            .container {
+                padding: 15px;
+            }
+        }
+
+        @media (min-width: 640px) {
+            .social-links-container {
+                flex-direction: row;
+                gap: 30px;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Estilização da barra de rolagem */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #1f1f23;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #dc2626;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #b91c1c;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Banner Principal -->
+        <div class="banner">
+            <!-- Imagem do aniversário 2 anos -->
+            <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" 
+                 alt="Aniversário 2 Anos Car Itz" 
+                 class="banner-image"
+                 style="background-image: url('https://figma.com/file/88fba65787c493529866bf63f61bae0938ed8869.png'); background-size: contain; background-repeat: no-repeat; background-position: center;">
+            
+            <div class="banner-content">
+                <div class="banner-info">
+                    <div>📅 16/11/2025</div>
+                    <div>⏰ 16:00</div>
+                    <div>📍 Estacionamento Imperial Shopping</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mensagem de Sucesso (inicialmente oculta) -->
+        <div id="successMessage" class="success-message hidden">
+            <div style="font-size: 4rem; margin-bottom: 20px;">🎉</div>
+            <h2>Confirmação Realizada com Sucesso!</h2>
+            <p>Sua presença foi confirmada para o evento!</p>
+            <p>Você já está na lista de participantes do <strong>Aniversário Car Itz</strong>.</p>
+            <div style="margin-top: 20px;">
+                <button class="btn" onclick="closeSuccessMessage()">Continuar Navegando</button>
+            </div>
+        </div>
+
+        <!-- Seção de Pagamento (inicialmente oculta) -->
+        <div id="paymentSection" class="card hidden">
+            <h2>💳 Pagamento PIX</h2>
+            <div class="payment-section">
+                <div>
+                    <h3>Detalhes do Pagamento</h3>
+                    <div id="paymentDetails"></div>
+                    
+                    <div class="form-group">
+                        <label>Chave PIX (E-mail)</label>
+                        <input type="text" id="pixKey" value="cariitz.eventos@gmail.com" readonly>
+                        <button class="btn" style="margin-top: 10px;" onclick="copyPixCode()">Copiar Código PIX Completo</button>
+                    </div>
+
+                    <div class="pix-info">
+                        <h4 style="color: #dc2626; margin-bottom: 10px;">Como pagar:</h4>
+                        <ol style="padding-left: 20px;">
+                            <li>Abra o app do seu banco</li>
+                            <li>Escaneie o QR Code ou use a chave PIX</li>
+                            <li>Confirme o valor</li>
+                            <li>Realize o pagamento</li>
+                            <li>Clique em "Confirmar Pagamento"</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <div class="qr-code">
+                    <h3>QR Code PIX</h3>
+                    <img id="qrCodeImage" src="" alt="QR Code PIX">
+                    <p style="font-size: 12px; color: #666; margin-top: 10px;">
+                        Escaneie com seu app bancário
+                    </p>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn" onclick="confirmPayment()">✅ Confirmar Pagamento Realizado</button>
+                <p style="font-size: 12px; color: #666; margin-top: 10px;">
+                    Clique apenas após realizar o pagamento
+                </p>
+            </div>
+        </div>
+
+        <!-- Descrição do Evento -->
+        <div class="card">
+            <h2>Sobre o Evento</h2>
+            <p>Prepare-se para um dia especial! 🎉</p>
+            <p>No dia 16 de novembro de 2025, às 16h, vamos celebrar o aniversário da página Car Itz com um grande encontro automotivo.</p>
+            <p>Será uma tarde de muita paixão por quatro rodas, reunindo carros antigos, modificados, rebaixados e projetos exclusivos, tudo em um só lugar.</p>
+            <p>Além da exposição, vai rolar aquele clima de confraternização, boas conversas, fotos incríveis e a oportunidade de conhecer gente que compartilha o mesmo amor pelo automobilismo.</p>
+            
+            <div class="pix-info" style="margin-top: 20px;">
+                <h3 style="color: #dc2626;">📍 Local e Valores</h3>
+                <p><strong>Local:</strong> Estacionamento do Shopping Imperial</p>
+                <p><strong>Entrada:</strong></p>
+                <ul style="margin-left: 20px;">
+                    <li>💰 Carro: R$ 10</li>
+                    <li>🏍️ Moto: R$ 5</li>
+                    <li>🚶 Pedestres: Grátis</li>
+                </ul>
+            </div>
+            
+            <p style="color: #dc2626; font-weight: 600; margin-top: 15px;">
+                Não fique de fora desse marco! Garanta sua presença, traga seu carro ou moto e venha comemorar com a gente esse momento histórico da Car Itz.
+            </p>
+        </div>
+
+        <!-- Formulário de Confirmação -->
+        <div class="card">
+            <h2>✅ Confirmar Presença</h2>
+            <form id="confirmationForm">
+                <div class="form-group">
+                    <label for="name">Nome Completo *</label>
+                    <input type="text" id="name" required placeholder="Digite seu nome completo">
+                </div>
+
+                <div class="form-group">
+                    <label for="vehicle">Veículo *</label>
+                    <input type="text" id="vehicle" required placeholder="Ex: Honda Civic, Yamaha MT-03, A pé...">
+                </div>
+
+                <div class="form-group">
+                    <label for="whatsapp">WhatsApp *</label>
+                    <input type="tel" id="whatsapp" required placeholder="(XX) XXXXX-XXXX" maxlength="15">
+                </div>
+
+                <div class="form-group">
+                    <label for="vehicleType">Como você vai ao evento? *</label>
+                    <select id="vehicleType" required>
+                        <option value="car">🚗 Carro - R$ 10,00</option>
+                        <option value="motorcycle">🏍️ Moto - R$ 5,00</option>
+                        <option value="pedestrian">🚶 A pé - Gratuito</option>
+                    </select>
+                </div>
+
+                <div class="pix-info">
+                    <p id="entryPrice"><strong>Valor da entrada: R$ 10,00</strong></p>
+                </div>
+
+                <button type="submit" class="btn">Confirmar Presença</button>
+            </form>
+        </div>
+
+        <!-- Lista de Confirmados -->
+        <div class="card">
+            <h2>👥 Lista de Confirmados (<span id="totalCount">0</span>)</h2>
+            
+            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;">
+                <div style="text-align: center; background: rgba(220, 38, 38, 0.1); padding: 15px; border-radius: 8px; border: 1px solid rgba(220, 38, 38, 0.3);">
+                    <div style="font-size: 2rem;">🚗</div>
+                    <div style="color: #dc2626; font-weight: bold;" id="carCount">0</div>
+                    <div style="font-size: 12px; color: #666;">Carros</div>
+                </div>
+                <div style="text-align: center; background: rgba(59, 130, 246, 0.1); padding: 15px; border-radius: 8px; border: 1px solid rgba(59, 130, 246, 0.3);">
+                    <div style="font-size: 2rem;">🏍️</div>
+                    <div style="color: #3b82f6; font-weight: bold;" id="motorcycleCount">0</div>
+                    <div style="font-size: 12px; color: #666;">Motos</div>
+                </div>
+                <div style="text-align: center; background: rgba(34, 197, 94, 0.1); padding: 15px; border-radius: 8px; border: 1px solid rgba(34, 197, 94, 0.3);">
+                    <div style="font-size: 2rem;">🚶</div>
+                    <div style="color: #22c55e; font-weight: bold;" id="pedestrianCount">0</div>
+                    <div style="font-size: 12px; color: #666;">A pé</div>
+                </div>
+            </div>
+
+            <div id="attendeesList" class="attendees-list">
+                <p style="text-align: center; color: #666; padding: 40px;">
+                    Nenhuma confirmação ainda. Seja o primeiro a confirmar sua presença!
+                </p>
+            </div>
+        </div>
+
+        <!-- Localização -->
+        <div class="card">
+            <h2>📍 Localização e Layout do Evento</h2>
+            <p><strong>Endereço:</strong></p>
+            <p>Marginal BR-010, 100 - Jardim São Luís</p>
+            <p>Imperatriz - MA, 65913-015</p>
+            <p style="margin-bottom: 20px;">Estacionamento do Shopping Imperial</p>
+
+            <!-- Informações sobre estacionamento -->
+            <div style="background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); border-radius: 8px; padding: 20px; margin-bottom: 25px;">
+                <h3 style="color: #3b82f6; margin-bottom: 15px; font-size: 1.1rem;">🅿️ Informações Importantes</h3>
+                <div style="color: #93c5fd; line-height: 1.6;">
+                    <p style="margin-bottom: 10px;">
+                        <strong>Estacionamento:</strong> Será utilizado o estacionamento próprio do Shopping Imperial durante todo o evento.
+                    </p>
+                    <p style="margin-bottom: 10px;">
+                        <strong>Pagamento:</strong> A taxa de entrada será cobrada apenas para veículos participantes da exposição (carros e motos). O estacionamento regular do shopping permanece gratuito para visitantes.
+                    </p>
+                    <p>
+                        <strong>Duração:</strong> O evento acontece das 16h até o final, com acesso liberado durante todo o período.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Layout do evento -->
+            <div style="margin-bottom: 25px;">
+                <h3 style="color: white; margin-bottom: 15px; font-size: 1.1rem;">🎯 Como será organizado o espaço</h3>
+                <div style="border: 1px solid #262626; border-radius: 8px; overflow: hidden; background: #1a1a1a;">
+                    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==" 
+                         alt="Layout do evento" 
+                         style="width: 100%; height: auto; display: block; background-image: url('https://figma.com/file/be34ff53b9c61a09add2b56b756e0d005bea822e.png'); background-size: contain; background-repeat: no-repeat; background-position: center; min-height: 300px;">
+                </div>
+                <p style="font-size: 12px; color: #666; margin-top: 8px;">
+                    Visualização da organização do estacionamento com áreas demarcadas para exposição de veículos, entrada, DJ e circulação.
+                </p>
+            </div>
+
+            <!-- Mapa -->
+            <div style="margin-bottom: 20px;">
+                <h3 style="color: white; margin-bottom: 15px; font-size: 1.1rem;">🗺️ Localização no mapa</h3>
+                <div style="position: relative; width: 100%; height: 300px; border-radius: 8px; overflow: hidden; border: 1px solid #262626;">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3968.1234567890123!2d-47.470404!3d-5.5290675!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x92c55f0ac325bfed%3A0x8f072f4cce2c961a!2sMarginal%20BR-010%2C%20100%20-%20Jardim%20Sao%20Luis%2C%20Imperatriz%20-%20MA%2C%2065913-015!5e0!3m2!1spt-BR!2sbr!4v1234567890123!5m2!1spt-BR!2sbr"
+                        width="100%"
+                        height="100%"
+                        style="border: 0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade">
+                    </iframe>
+                </div>
+            </div>
+
+            <div style="margin-top: 15px;">
+                <a href="https://www.google.com/maps/dir//Marginal+BR-010,+100+-+Jardim+Sao+Luis,+Imperatriz+-+MA,+65913-015/@-5.5371011,-47.5733443,12z/data=!4m8!4m7!1m0!1m5!1s0x92c55f0ac325bfed:0x8f072f4cce2c961a!2m2!1d-47.470404!2d-5.5290675?entry=ttu&g_ep=EgoyMDI1MDkyOS4wIKXMDSoASAFQAw%3D%3D"
+                   target="_blank"
+                   style="color: #dc2626; text-decoration: none; font-weight: 500;">
+                    🗺️ Abrir no Google Maps para navegação
+                </a>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer style="text-align: center; color: #666; margin-top: 40px;">
+            <!-- Redes Sociais -->
+            <div class="social-links">
+                <div style="margin-bottom: 25px;">
+                    <h3 style="color: #dc2626; font-size: 1.1rem; margin-bottom: 15px;">
+                        📱 Siga-nos nas Redes Sociais
+                    </h3>
+                    <p style="color: #9ca3af; font-size: 14px; margin-bottom: 25px;">
+                        Fique por dentro das novidades e entre em contato conosco
+                    </p>
+                </div>
+
+                <div class="social-links-container">
+                    <!-- Instagram -->
+                    <a href="https://www.instagram.com/car_iitz?igsh=eHRsMHA5MW9mYjA5&utm_source=qre" 
+                       target="_blank" 
+                       class="social-link instagram">
+                        <svg class="social-link-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                        </svg>
+                        <div>
+                            <div style="font-weight: 500; font-size: 14px;">Instagram</div>
+                            <div style="color: #9ca3af; font-size: 12px;">@car_iitz</div>
+                        </div>
+                    </a>
+
+                    <!-- WhatsApp Individual -->
+                    <a href="https://wa.me/5599991043501" 
+                       target="_blank" 
+                       class="social-link whatsapp">
+                        <svg class="social-link-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.96 9.96 0 0 0 12 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18a7.96 7.96 0 0 1-4.07-1.118l-.292-.173-3.025.9.9-3.025-.173-.292A7.96 7.96 0 0 1 4 12c0-4.411 3.589-8 8-8s8 3.589 8 8-3.589 8-8 8z"/>
+                            <path d="M8.5 7.5c-.275 0-.5.225-.5.5 0 .138.056.263.146.354.09.09.216.146.354.146h.5c.138 0 .263-.056.354-.146.09-.091.146-.216.146-.354 0-.275-.225-.5-.5-.5h-.5z"/>
+                        </svg>
+                        <div>
+                            <div style="font-weight: 500; font-size: 14px;">WhatsApp</div>
+                            <div style="color: #9ca3af; font-size: 12px;">(99) 99104-3501</div>
+                        </div>
+                    </a>
+
+                    <!-- Grupo WhatsApp -->
+                    <a href="https://chat.whatsapp.com/DQLpWRJ5UnLJtWE77gN7D6" 
+                       target="_blank" 
+                       class="social-link whatsapp">
+                        <svg class="social-link-icon" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M16 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2zM4 18v-1c0-1.11.89-2 2-2s2 .89 2 2v1h8v-1c0-1.11.89-2 2-2s2 .89 2 2v1h2v2H2v-2h2zM8 4c0-1.11.89-2 2-2s2 .89 2 2-.89 2-2 2-2-.89-2-2z"/>
+                            <circle cx="9" cy="9" r="4"/>
+                            <path d="M23 20a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h18a2 2 0 0 1 2 2v8z"/>
+                        </svg>
+                        <div>
+                            <div style="font-weight: 500; font-size: 14px;">Grupo WhatsApp</div>
+                            <div style="color: #9ca3af; font-size: 12px;">Grupo Car Itz</div>
+                        </div>
+                    </a>
+                </div>
+
+                <div style="text-align: center; margin-top: 25px; font-size: 12px; color: #6b7280;">
+                    <p>Clique nos links acima para entrar em contato ou seguir nosso conteúdo</p>
+                </div>
+            </div>
+
+            <!-- Copyright -->
+            <div style="padding-top: 30px; border-top: 1px solid #262626; margin-top: 30px;">
+                <p>© 2025 Car Itz - Evento de Aniversário</p>
+                <p style="font-size: 14px; margin-top: 10px;">
+                    Para dúvidas, entre em contato através das redes sociais acima
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        /**
+         * Sistema de gerenciamento do evento Car Itz
+         * Desenvolvido para confirmação de presença e pagamento PIX
+         */
+
+        // Variáveis globais
+        let attendees = [];
+        let currentPaymentAttendee = null;
+
+        // Chave PIX específica do evento
+        const PIX_CODE = '00020101021126470014br.gov.bcb.pix0125cariitz.eventos@gmail.com5204000053039865802BR5923FRANCISCO G DE S ARAUJO6010IMPERATRIZ62070503***6304AA01';
+
+        // Carregar dados salvos ao inicializar
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAttendees();
+            setupFormHandlers();
+            updateEntryPrice();
+        });
+
+        /**
+         * Configurar manipuladores de eventos do formulário
+         */
+        function setupFormHandlers() {
+            // Formatação automática do WhatsApp
+            const whatsappInput = document.getElementById('whatsapp');
+            whatsappInput.addEventListener('input', function(e) {
+                e.target.value = formatWhatsApp(e.target.value);
+            });
+
+            // Atualizar preço quando tipo de veículo mudar
+            const vehicleTypeSelect = document.getElementById('vehicleType');
+            vehicleTypeSelect.addEventListener('change', updateEntryPrice);
+
+            // Submissão do formulário
+            const confirmationForm = document.getElementById('confirmationForm');
+            confirmationForm.addEventListener('submit', handleFormSubmit);
+        }
+
+        /**
+         * Formatar número de WhatsApp
+         */
+        function formatWhatsApp(value) {
+            const numbers = value.replace(/\D/g, '');
+            if (numbers.length <= 11) {
+                return numbers.replace(/(\d{0,2})(\d{0,5})(\d{0,4})/, function(match, p1, p2, p3) {
+                    let result = '';
+                    if (p1) result += `(${p1}`;
+                    if (p1.length === 2) result += ') ';
+                    if (p2) result += p2;
+                    if (p2.length === 5) result += '-';
+                    if (p3) result += p3;
+                    return result;
+                });
+            }
+            return value;
+        }
+
+        /**
+         * Atualizar preço da entrada baseado no tipo de veículo
+         */
+        function updateEntryPrice() {
+            const vehicleType = document.getElementById('vehicleType').value;
+            const priceElement = document.getElementById('entryPrice');
+            
+            let price = '';
+            switch (vehicleType) {
+                case 'car': price = 'R$ 10,00'; break;
+                case 'motorcycle': price = 'R$ 5,00'; break;
+                case 'pedestrian': price = 'Gratuito'; break;
+            }
+            
+            priceElement.innerHTML = `<strong>Valor da entrada: ${price}</strong>`;
+        }
+
+        /**
+         * Manipular submissão do formulário
+         */
+        function handleFormSubmit(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value.trim();
+            const vehicle = document.getElementById('vehicle').value.trim();
+            const whatsapp = document.getElementById('whatsapp').value.trim();
+            const vehicleType = document.getElementById('vehicleType').value;
+
+            if (!name || !vehicle || !whatsapp) {
+                alert('Por favor, preencha todos os campos obrigatórios.');
+                return;
+            }
+
+            // Criar novo participante
+            const newAttendee = {
+                id: Date.now().toString(),
+                name: name,
+                vehicle: vehicle,
+                whatsapp: whatsapp,
+                vehicleType: vehicleType,
+                timestamp: new Date().toISOString()
+            };
+
+            // Adicionar à lista
+            attendees.push(newAttendee);
+            saveAttendees();
+            updateAttendeesList();
+
+            // Limpar formulário
+            document.getElementById('confirmationForm').reset();
+            updateEntryPrice();
+
+            // Se não for pedestre, mostrar seção de pagamento
+            if (vehicleType !== 'pedestrian') {
+                showPaymentSection(newAttendee);
+            } else {
+                showSuccessMessage();
+            }
+        }
+
+        /**
+         * Mostrar seção de pagamento
+         */
+        function showPaymentSection(attendee) {
+            currentPaymentAttendee = attendee;
+            
+            // Atualizar detalhes do pagamento
+            const paymentDetails = document.getElementById('paymentDetails');
+            const amount = getPaymentAmount(attendee.vehicleType);
+            
+            paymentDetails.innerHTML = `
+                <p><strong>Participante:</strong> ${attendee.name}</p>
+                <p><strong>Veículo:</strong> ${attendee.vehicle}</p>
+                <p><strong>Tipo:</strong> ${attendee.vehicleType === 'car' ? '🚗 Carro' : '🏍️ Moto'}</p>
+                <p><strong>Valor:</strong> R$ ${amount}</p>
+            `;
+
+            // Usar QR Code específico fornecido (como base64 ou URL da imagem)
+            // Substitua pela URL real da imagem do QR Code
+            const qrCodeUrl = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='; // Placeholder
+            document.getElementById('qrCodeImage').src = qrCodeUrl;
+            document.getElementById('qrCodeImage').style.backgroundImage = "url('https://figma.com/file/88fba65787c493529866bf63f61bae0938ed8869.png')";
+            document.getElementById('qrCodeImage').style.backgroundSize = 'contain';
+            document.getElementById('qrCodeImage').style.backgroundRepeat = 'no-repeat';
+            document.getElementById('qrCodeImage').style.backgroundPosition = 'center';
+
+            // Mostrar seção
+            document.getElementById('paymentSection').classList.remove('hidden');
+            
+            // Scroll para a seção de pagamento
+            document.getElementById('paymentSection').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        /**
+         * Obter valor do pagamento baseado no tipo de veículo
+         */
+        function getPaymentAmount(vehicleType) {
+            switch (vehicleType) {
+                case 'car': return '10,00';
+                case 'motorcycle': return '5,00';
+                default: return '0,00';
+            }
+        }
+
+        /**
+         * Copiar código PIX completo
+         */
+        async function copyPixCode() {
+            try {
+                await navigator.clipboard.writeText(PIX_CODE);
+                alert('Código PIX copiado para a área de transferência!');
+            } catch (err) {
+                console.error('Erro ao copiar código PIX:', err);
+                alert('Erro ao copiar código PIX. Tente novamente.');
+            }
+        }
+
+        /**
+         * Confirmar pagamento
+         */
+        function confirmPayment() {
+            // Esconder seção de pagamento
+            document.getElementById('paymentSection').classList.add('hidden');
+            currentPaymentAttendee = null;
+            
+            // Mostrar mensagem de sucesso
+            showSuccessMessage();
+        }
+
+        /**
+         * Mostrar mensagem de sucesso
+         */
+        function showSuccessMessage() {
+            document.getElementById('successMessage').classList.remove('hidden');
+            document.getElementById('successMessage').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        /**
+         * Fechar mensagem de sucesso
+         */
+        function closeSuccessMessage() {
+            document.getElementById('successMessage').classList.add('hidden');
+        }
+
+        /**
+         * Carregar participantes do localStorage
+         */
+        function loadAttendees() {
+            const saved = localStorage.getItem('caritz-attendees');
+            if (saved) {
+                try {
+                    attendees = JSON.parse(saved);
+                    // Migrar dados antigos que não tinham o campo "vehicle"
+                    attendees = attendees.map(attendee => ({
+                        ...attendee,
+                        vehicle: attendee.vehicle || 'Não informado'
+                    }));
+                    updateAttendeesList();
+                } catch (error) {
+                    console.error('Erro ao carregar dados salvos:', error);
+                }
+            }
+        }
+
+        /**
+         * Salvar participantes no localStorage
+         */
+        function saveAttendees() {
+            localStorage.setItem('caritz-attendees', JSON.stringify(attendees));
+        }
+
+        /**
+         * Atualizar lista de participantes na interface
+         */
+        function updateAttendeesList() {
+            const listContainer = document.getElementById('attendeesList');
+            const totalCount = document.getElementById('totalCount');
+            const carCount = document.getElementById('carCount');
+            const motorcycleCount = document.getElementById('motorcycleCount');
+            const pedestrianCount = document.getElementById('pedestrianCount');
+
+            if (attendees.length === 0) {
+                listContainer.innerHTML = `
+                    <p style="text-align: center; color: #666; padding: 40px;">
+                        Nenhuma confirmação ainda. Seja o primeiro a confirmar sua presença!
+                    </p>
+                `;
+                totalCount.textContent = '0';
+                carCount.textContent = '0';
+                motorcycleCount.textContent = '0';
+                pedestrianCount.textContent = '0';
+                return;
+            }
+
+            // Atualizar contadores
+            const cars = attendees.filter(a => a.vehicleType === 'car').length;
+            const motorcycles = attendees.filter(a => a.vehicleType === 'motorcycle').length;
+            const pedestrians = attendees.filter(a => a.vehicleType === 'pedestrian').length;
+
+            totalCount.textContent = attendees.length;
+            carCount.textContent = cars;
+            motorcycleCount.textContent = motorcycles;
+            pedestrianCount.textContent = pedestrians;
+
+            // Gerar lista HTML
+            const listHTML = attendees.map((attendee, index) => {
+                const icon = getVehicleIcon(attendee.vehicleType);
+                const badgeColor = getBadgeColor(attendee.vehicleType);
+                const vehicleLabel = getVehicleLabel(attendee.vehicleType);
+
+                return `
+                    <div class="attendee-item">
+                        <div class="attendee-info">
+                            <span class="attendee-icon">${icon}</span>
+                            <div>
+                                <div style="color: white; font-weight: 500;">
+                                    ${index + 1}. ${attendee.name}
+                                </div>
+                                <div style="color: #666; font-size: 14px;">
+                                    ${attendee.vehicle}
+                                </div>
+                            </div>
+                        </div>
+                        <span class="badge" style="background: ${badgeColor};">
+                            ${vehicleLabel}
+                        </span>
+                    </div>
+                `;
+            }).join('');
+
+            listContainer.innerHTML = listHTML;
+        }
+
+        /**
+         * Obter ícone do tipo de veículo
+         */
+        function getVehicleIcon(type) {
+            switch (type) {
+                case 'car': return '🚗';
+                case 'motorcycle': return '🏍️';
+                case 'pedestrian': return '🚶';
+                default: return '❓';
+            }
+        }
+
+        /**
+         * Obter cor do badge baseado no tipo de veículo
+         */
+        function getBadgeColor(type) {
+            switch (type) {
+                case 'car': return '#dc2626';
+                case 'motorcycle': return '#3b82f6';
+                case 'pedestrian': return '#22c55e';
+                default: return '#666';
+            }
+        }
+
+        /**
+         * Obter label do tipo de veículo
+         */
+        function getVehicleLabel(type) {
+            switch (type) {
+                case 'car': return 'Carro';
+                case 'motorcycle': return 'Moto';
+                case 'pedestrian': return 'A pé';
+                default: return type;
+            }
+        }
+    </script>
+</body>
+</html>
